@@ -1,0 +1,31 @@
+# Segredos - nunca versionar
+kaggle.json
+.env
+*.key
+
+# Dados brutos e derivados (volume grande e licenca propria do dataset)
+data/
+dataset/
+*.zip
+*.tar.gz
+
+# Pesos de modelos treinados (regenerados pelo notebook)
+*.h5
+*.keras
+*.pt
+*.pth
+models/
+
+# Python e notebooks
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Sistema
+.DS_Store
+
+# Pasta local de capturas originais (os prints versionados ficam em assets/)
+Screenshots/
+Screenshots */
