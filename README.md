@@ -24,7 +24,7 @@
 
 O Pulso simula o ecossistema de dados de uma plataforma de cardiologia inteligente. Ao longo de sete fases, o projeto integra Machine Learning, IoT, Visão Computacional, NLP e séries temporais aplicados à saúde cardiovascular.
 
-Esta é a Fase 4: um protótipo de assistente que classifica radiografias de tórax em **cardiomegalia** (aumento da silhueta cardíaca) ou **sem achados**. A fase compara uma CNN treinada do zero com Transfer Learning sobre a ResNet50, apresenta o resultado em um protótipo interativo dentro de um notebook (com Grad-CAM, limiar explícito e aviso de uso) e mede, no Ir Além 1, se o modelo erra de forma diferente por sexo, faixa etária e tipo de radiografia.
+Esta é a Fase 4: um protótipo de assistente que classifica radiografias de tórax como **cardiomegalia** (aumento da silhueta cardíaca) ou **sem achados**. A fase compara uma CNN treinada do zero com outra treinada por Transfer Learning sobre a ResNet50, apresenta os resultados em um protótipo interativo em um notebook (com Grad-CAM, limiar explícito e aviso de uso) e mede, no Ir Além 1, se o modelo erra de forma diferente por sexo, faixa etária e tipo de radiografia.
 
 ---
 
@@ -36,8 +36,8 @@ Esta é a Fase 4: um protótipo de assistente que classifica radiografias de tó
 | Divisão | Por paciente, estratificada, semente 42: treino 2.277, validação 462, teste 446 (19 positivos no teste) |
 | CNN do zero | AUC-ROC 0,668, recall 0,316, precisão 0,118 no teste |
 | ResNet50 | AUC-ROC 0,845, recall 0,895, precisão 0,108 no teste |
-| Limitação principal | Precisão em torno de 0,11 nos dois modelos: a maior parte das imagens sinalizadas não tem cardiomegalia no laudo. A acurácia da ResNet50 (0,682) fica abaixo da referência que responde sempre "sem achados" (0,957) |
-| Fairness por sexo | ResNet50: nenhuma das 5 métricas mostra diferença demonstrada entre mulheres e homens, com só 19 positivos no teste. CNN do zero: 2 de 5 métricas mostram diferença (falsos positivos e AUC-ROC) |
+| Limitação principal | Precisão em torno de 0,11 em ambos os modelos: a maior parte das imagens sinalizadas não apresenta cardiomegalia no laudo. A acurácia da ResNet50 (0,682) fica abaixo da referência que responde sempre "sem achados" (0,957) |
+| Fairness por sexo | ResNet50: nenhuma das 5 métricas mostra diferença entre mulheres e homens, com apenas 19 positivos no teste. CNN do zero: 2 de 5 métricas mostram diferença (falsos positivos e AUC-ROC) |
 | Achado principal do Ir Além 1 | A ResNet50 sinaliza 48,8% das radiografias AP sem achados contra 25,8% das PA (p < 0,001) |
 
 Os números acima vêm de `resultados/` e das saídas dos notebooks executados. Esta fase é um protótipo acadêmico: nenhum resultado indica desempenho clínico.
@@ -47,7 +47,7 @@ Os números acima vêm de `resultados/` e das saídas dos notebooks executados. 
 ## Continuidade com as Fases 1 a 3
 
 - **Fase 1:** documentou o dataset, a governança e o eixo de viés de gênero em cardiologia. A Fase 4 retoma esse eixo no Ir Além 1, medindo o desempenho por sexo.
-- **Fase 2:** avaliou viés por subgrupo e registrou pendências. Foi aplicado aqui: a análise por grupo usa apenas o conjunto de teste e traz intervalo de confiança por bootstrap de pacientes. **Não** foi aplicado: validação cruzada, porque esta fase usa uma única divisão dos dados (pendência mantida). A pendência de converter o sinal de ECG em imagem e usar uma CNN também não foi retomada, porque esta fase trabalha com radiografias de tórax.
+- **Fase 2:** avaliou viés por subgrupo e registrou pendências. Foi aplicado aqui: a análise por grupo usa apenas o conjunto de teste e traz o intervalo de confiança por bootstrap dos pacientes. **Não** foi aplicada validação cruzada, pois esta fase utiliza uma única divisão dos dados (pendência mantida). A pendência de converter o sinal de ECG em imagem e usar uma CNN também não foi retomada, pois esta fase trabalha com radiografias de tórax.
 - **Fase 3:** a regra de não substituir uma falha por um valor plausível foi mantida no pré-processamento: idade inválida vira valor ausente, e o notebook para com erro se nenhuma idade for lida. O fluxo de sinais do Pulso Band ainda não está conectado ao módulo de imagem. A integração é objetivo da Fase 7.
 
 ---
@@ -58,7 +58,7 @@ O Pulso é construído em torno de uma questão de governança em saúde. Na Fas
 
 **um modelo de imagem só tem valor clínico se for possível dizer para quem e em que condições ele erra.**
 
-Por isso a fase não se limita a reportar acurácia. Cada métrica vem com intervalo de confiança, o limiar de decisão aparece junto de cada resultado, e o desempenho é aberto por sexo (eixo do projeto), por faixa etária e por projeção da radiografia (AP ou PA). A abertura por projeção surgiu de uma observação do protótipo: o Grad-CAM de um falso positivo mostrou uma radiografia portátil em AP, o que levantou a hipótese de que o modelo reage ao tipo de exame. Ela foi testada na Parte C do Notebook 4 e os dados a sustentam (ver [Ir Além 1](#ir-além-1--ética-e-governança-em-visão-computacional)).
+Por isso, a fase não se limita a reportar a acurácia. Cada métrica vem com um intervalo de confiança; o limiar de decisão aparece junto a cada resultado, e o desempenho é apresentado por sexo (eixo do projeto), por faixa etária e por projeção da radiografia (AP ou PA). A abertura por projeção surgiu de uma observação do protótipo: o Grad-CAM de um falso positivo destacou uma radiografia portátil em AP, o que levantou a hipótese de que o modelo reage ao tipo de exame. Ela foi testada na Parte C do Notebook 4 e os dados a sustentam (ver [Ir Além 1](#ir-além-1--ética-e-governança-em-visão-computacional)).
 
 ---
 
@@ -153,11 +153,11 @@ Pulso_F4/
 | Fonte usada no projeto | Kaggle: `nih-chest-xrays/sample` (https://www.kaggle.com/datasets/nih-chest-xrays/sample) |
 | Provedor | NIH Clinical Center. Download oficial: https://nihcc.app.box.com/v/ChestXray-NIHCC |
 | Artigo de referência | Wang X. et al. *ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks on Weakly-Supervised Classification and Localization of Common Thorax Diseases*. IEEE CVPR, 2017, pp. 3462-3471 (https://arxiv.org/abs/1705.02315) |
-| Rótulos | Extraídos dos laudos por processamento de linguagem natural (Wang et al., 2017). Sem validação clínica independente neste projeto |
-| Licença e atribuição | Segundo a [documentação do Google Cloud](https://docs.cloud.google.com/healthcare-api/docs/resources/public-datasets/nih-chest) para o dataset do NIH, não há restrições de uso, mas exige link para o site de download do NIH, citação do artigo CVPR 2017 e reconhecimento do NIH Clinical Center como provedor. O campo de licença da página do Kaggle não pôde ser consultado automaticamente |
+| Rótulos | Extraídos dos laudos por meio de processamento de linguagem natural (Wang et al., 2017). Sem validação clínica independente neste projeto |
+| Licença e atribuição | Segundo a [documentação do Google Cloud](https://docs.cloud.google.com/healthcare-api/docs/resources/public-datasets/nih-chest) para o dataset do NIH, não há restrições de uso, mas são exigidos o link para o site de download do NIH, a citação do artigo CVPR 2017 e o reconhecimento do NIH Clinical Center como provedor. O campo de licença da página do Kaggle não pôde ser consultado automaticamente |
 | Tamanho original das imagens | 1024 x 1024 pixels (amostra de 300 imagens conferida no Notebook 1) |
 
-As imagens **não** estão neste repositório (ver [Rastreabilidade](#rastreabilidade-dos-artefatos)).
+As imagens **não** estão neste repositório (consulte [Rastreabilidade](#rastreabilidade-dos-artefatos)).
 
 ### Decisões do pipeline
 
@@ -165,7 +165,7 @@ As imagens **não** estão neste repositório (ver [Rastreabilidade](#rastreabil
 |---|---|---|
 | Tarefa | Classificação binária: cardiomegalia (1) contra sem achados (0) | Mantém o foco cardiovascular do projeto e permite métricas simples de interpretar |
 | Imagens com outras doenças e sem cardiomegalia | Excluídas (2.421 de 5.606) | Evitam um rótulo 0 ambíguo. Consequência: o modelo não é testado contra outras doenças |
-| Divisão | **Por paciente**, estratificada, cerca de 70% / 15% / 15% | Cada paciente tem em média 1,15 imagens (máximo 6). Dividir por imagem colocaria o mesmo paciente em treino e teste |
+| Divisão | **Por paciente**, estratificada em 70% / 15% / 15% | Cada paciente tem, em média, 1,15 imagens (máximo de 6). Dividir por imagem colocaria o mesmo paciente em treino e teste |
 | Cor | Escala de cinza, 1 canal | Radiografia é monocromática |
 | Tamanho | 224 x 224, interpolação LANCZOS | Entrada padrão de VGG16 e ResNet |
 | Normalização | 0 a 255 para 0 a 1, aplicada dentro do modelo | Os arquivos ficam em `uint8`, menores |
@@ -176,8 +176,8 @@ As imagens **não** estão neste repositório (ver [Rastreabilidade](#rastreabil
 ### Resultado do pipeline
 
 - 3.185 imagens no experimento (3.044 sem achados e 141 com cardiomegalia, prevalência de 4,43%) de 2.762 pacientes.
-- O notebook confere por `assert` que nenhum paciente aparece em duas partições.
-- Idades lidas: 3.184 de 3.185 registros. 1 registro tinha idade fora de 0 a 100 anos e foi marcado como ausente.
+- O notebook verifica, por meio de um `assert`, que nenhum paciente aparece em duas partições.
+- Idades lidas: 3.184 de 3.185 registros. 1 registro tinha idade fora do intervalo de 0 a 100 anos e foi marcado como ausente.
 
 | Partição | Imagens | Pacientes | Positivos | Prevalência | Sexo F | Sexo M |
 |---|---|---|---|---|---|---|
@@ -195,7 +195,7 @@ Conferência visual (4 imagens de cada classe, antes e depois do pré-processame
   <img src="assets/nb1_exemplos_preprocessamento.png" alt="Exemplos antes e depois do pré-processamento" width="95%">
 </p>
 
-**Correção feita durante a fase:** a primeira execução do Notebook 1 leu zero idades sem avisar, porque a coluna vem como texto (por exemplo `058Y`) e a conversão numérica transformava tudo em ausente. O parsing foi corrigido (função `limpar_metadados`, seção 4 do notebook) e uma verificação passou a interromper a execução se nenhuma idade for lida (mesma seção).
+**Correção feita durante a fase:** a primeira execução do Notebook 1 leu zero idades sem avisar, porque a coluna vinha como texto (por exemplo, `058Y`) e a conversão para numérico transformava tudo em valores ausentes. O parsing foi corrigido (função `limpar_metadados`, seção 4 do notebook), e uma verificação passou a interromper a execução caso nenhuma idade seja lida (na mesma seção).
 
 Relatório da parte: [`docs/relatorio_parte1_preprocessamento.md`](docs/relatorio_parte1_preprocessamento.md).
 
@@ -209,7 +209,7 @@ Relatório da parte: [`docs/relatorio_parte1_preprocessamento.md`](docs/relatori
 |---|---|---|
 | Arquitetura | 5 blocos Conv, BatchNormalization, ReLU e MaxPooling (16, 32, 64, 128, 128 filtros), média global, Dropout 0,4, saída sigmoide | ResNet50 com pesos da ImageNet, canal replicado para 3, subtração da média da ImageNet, média global, Dropout 0,3, saída sigmoide |
 | Parâmetros | 245.969 | 23.589.761 |
-| Treino | Adam, taxa 1e-3, até 40 épocas (executadas: 23) | Fase 1: só a cabeça, taxa 1e-3 (8 épocas). Fase 2: bloco `conv5_` liberado, BatchNormalization congelada, taxa 1e-5 (10 épocas) |
+| Treino | Adam, taxa de 1e-3, até 40 épocas (executadas: 23) | Fase 1: só a cabeça, taxa de 1e-3 (8 épocas). Fase 2: bloco `conv5_` liberado, BatchNormalization congelada, taxa 1e-5 (10 épocas) |
 | Limiar | 0,79 | 0,35 |
 
 Comuns aos dois: peso de classe `N / (2 x N_classe)` calculado no treino (0,523 para sem achados e 11,385 para cardiomegalia), aumento de dados leve (rotação, deslocamento, zoom e contraste) **sem espelhamento horizontal**, parada antecipada pela AUC-PR da validação e limiar escolhido na **validação**, maximizando o F1. O conjunto de teste só entra na avaliação final. A ResNet50 foi a escolha padrão entre as duas opções do enunciado (VGG16 ou ResNet); não foi feita uma comparação com a VGG16.
@@ -222,7 +222,7 @@ Comuns aos dois: peso de classe `N / (2 x N_classe)` calculado no treino (0,523 
 | CNN simples (do zero) | 0,79 | 0,870 | 0,118 [0,000 a 0,250] | 0,316 [0,000 a 0,522] | 0,171 [0,000 a 0,318] | 0,668 [0,510 a 0,772] | 0,085 [0,027 a 0,204] |
 | ResNet50 (Transfer Learning) | 0,35 | 0,682 | 0,108 [0,045 a 0,183] | 0,895 [0,687 a 1,000] | 0,193 [0,085 a 0,306] | 0,845 [0,748 a 0,908] | 0,157 [0,059 a 0,345] |
 
-Intervalos de 95% por bootstrap de 1000 repetições reamostrando pacientes.
+Intervalos de confiança de 95% por bootstrap com 1000 repetições, reamostrando os pacientes.
 
 | Modelo | Verdadeiros negativos | Falsos positivos | Falsos negativos | Verdadeiros positivos |
 |---|---|---|---|---|
@@ -245,22 +245,22 @@ Intervalos de 95% por bootstrap de 1000 repetições reamostrando pacientes.
 
 ### Como ler esses resultados
 
-- **A ResNet50 opera em alta sensibilidade e baixa precisão.** Com o limiar 0,35 ela sinaliza 157 das 446 imagens do teste (35,2%), acerta 17 dos 19 casos e gera 140 falsos positivos. A acurácia (0,682) fica abaixo da referência que responde sempre "sem achados" (0,957). Por isso a acurácia não é usada como métrica principal.
-- **A ResNet50 ordena os casos melhor que a CNN do zero.** AUC-ROC 0,845 contra 0,668. A diferença pareada, calculada por [`scripts/comparacao_pareada.py`](scripts/comparacao_pareada.py), é 0,183 com IC de 95% [0,086 a 0,301], que exclui zero. Na AUC-PR a diferença é 0,072 com IC [-0,040 a 0,202], que inclui zero: a vantagem em AUC-PR não está demonstrada.
-- **Na validação a ordem se inverte:** AUC-ROC 0,741 para a CNN e 0,692 para a ResNet50. Com um único conjunto de teste de 19 positivos, a vantagem da ResNet50 deve ser tratada como hipótese.
+- **A ResNet50 opera com alta sensibilidade e baixa precisão.** Com o limiar 0,35 ela sinaliza 157 das 446 imagens do teste (35,2%), acerta 17 dos 19 casos e gera 140 falsos positivos. A acurácia (0,682) fica abaixo da referência, que sempre responde "sem achados" (0,957). Por isso, a acurácia não é usada como métrica principal.
+- **A ResNet50 ordena os casos melhor do que a CNN do zero.** AUC-ROC 0,845 contra 0,668. A diferença pareada, calculada por [`scripts/comparacao_pareada.py`](scripts/comparacao_pareada.py), é de 0,183, com IC de 95% [0,086 a 0,301], que exclui zero. Na AUC-PR, a diferença é 0,072 com IC [-0,040 a 0,202], que inclui zero: a vantagem em AUC-PR não está demonstrada.
+- **Na validação, a ordem se inverte:** AUC-ROC de 0,741 para a CNN e de 0,692 para a ResNet50. Com um único conjunto de teste de 19 positivos, a vantagem da ResNet50 deve ser tratada como hipótese.
 - **A ResNet50 sobreajusta.** No gráfico de treino, a AUC-PR do treino sobe enquanto a da validação permanece estável. A parada antecipada restaurou os melhores pesos.
 - **Os resultados variam entre execuções.** Em uma execução anterior da mesma configuração, descartada e não preservada neste repositório, a ResNet50 deu AUC-ROC de 0,79 e limiar de 0,85. Os valores oficiais são os de [`resultados/metricas_nb2.json`](resultados/metricas_nb2.json), da execução final.
 
 ### Protótipo de apresentação (Notebook 3)
 
-O protótipo é uma interface interativa dentro do notebook (`ipywidgets`), com duas abas: **Exemplos do teste** (escolhe uma radiografia do conjunto de teste, filtrando pelo laudo) e **Enviar imagem** (PNG ou JPG, mantida só na memória da sessão). Para cada imagem ele mostra:
+O protótipo é uma interface interativa no notebook (`ipywidgets`), com duas abas: **Exemplos do teste** (escolhe uma radiografia do conjunto de teste, filtrando pelo laudo) e **Enviar imagem** (PNG ou JPG, mantida apenas na memória da sessão). Para cada imagem ele mostra:
 
 - o original, a entrada do modelo (224 x 224) e o **Grad-CAM** da última camada convolucional;
 - a pontuação do modelo e o limiar. Ela é chamada de "pontuação" e não de probabilidade, porque o modelo não é calibrado;
 - a decisão ("sinalizada para revisão" ou "não sinalizada"), com a frase de que "não sinalizada" não exclui cardiomegalia;
 - o contexto do teste (recall, precisão e falsos positivos) e o aviso de que o projeto não é diagnóstico.
 
-**Verificação do protótipo contra o Notebook 2** (saída executada do notebook): o pré-processamento do protótipo reproduz exatamente os arrays gravados no Notebook 1 (5 imagens conferidas). As pontuações recalculadas diferem das salvas no Notebook 2 em no máximo 0,0032 (média 0,0006) e a AUC-ROC vai de 0,8451 para 0,8453. O Notebook 3 rodou em CPU e o Notebook 2 em GPU, e a diferença é compatível com variação numérica entre os dois, mas isso não foi isolado experimentalmente. Consequência: 2 de 446 decisões mudam no limiar, todas em imagens a menos de 0,0032 do limiar (2 imagens estão nessa faixa).
+**Verificação do protótipo contra o Notebook 2** (saída executada do notebook): o pré-processamento do protótipo reproduz exatamente os arrays gravados no Notebook 1 (5 imagens conferidas). As pontuações recalculadas diferem das salvas no Notebook 2 em no máximo 0,0032 (média de 0,0006), e a AUC-ROC vai de 0,8451 para 0,8453. O Notebook 3 rodou em CPU e o Notebook 2 em GPU, e a diferença é compatível com variação numérica entre os dois, mas isso não foi isolado experimentalmente. Consequência: 2 de 446 decisões mudam no limiar, todas em imagens a menos de 0,0032 do limiar (2 imagens estão nessa faixa).
 
 Quatro exemplos do conjunto de teste, sorteados com a semente 42 (sem escolher casos favoráveis):
 
@@ -281,7 +281,7 @@ Quatro exemplos do conjunto de teste, sorteados com a semente 42 (sem escolher c
 Os exemplos 2 e 4 estão em `assets/nb3_exemplo_2.png` e `assets/nb3_exemplo_4.png`. Duas observações sobre o Grad-CAM, sem generalização possível com quatro exemplos:
 
 - No exemplo 1 (acerto), a região de maior atenção fica na área do coração, mas há também atenção na região do ombro e no canto superior.
-- No exemplo 3 (falso positivo), a imagem traz as marcações AP e PORTABLE e vários tubos e cabos, e a região de maior atenção fica no lado esquerdo da imagem, sobre o pulmão e os tubos, e não sobre a silhueta cardíaca. Foi esse exemplo que motivou a análise por projeção do Ir Além 1.
+- No exemplo 3 (falso positivo), a imagem traz as marcações AP e PORTABLE, além de vários tubos e cabos, e a região de maior atenção fica no lado esquerdo da imagem, sobre o pulmão e os tubos, e não sobre a silhueta cardíaca. Foi esse exemplo que motivou a análise por projeção do Ir Além 1.
 
 O Grad-CAM mostra o que influenciou a pontuação do modelo. Ele não é uma localização anatômica validada.
 
@@ -294,11 +294,11 @@ Notebook: [`notebooks/04_fairness_governanca.ipynb`](notebooks/04_fairness_gover
 ### Limitações do dataset
 
 - **Desbalanceamento:** 4,43% de prevalência (141 de 3.185). Treino com 100 positivos, validação com 22 e teste com 19.
-- **Exclusão de outras doenças:** 2.421 de 5.606 imagens ficaram fora, então o modelo não foi testado em separar cardiomegalia de outros achados.
-- **Sexo:** o dataset registra apenas M e F. A amostra original tem 2.472 mulheres e 3.134 homens (44,1% de mulheres). No experimento, as mulheres são 44,5% das imagens e têm 73 positivos em 1.416 imagens (5,16%), contra 68 em 1.769 para os homens (3,84%). Essa diferença de prevalência não é significativa a 5% (teste exato de Fisher, p = 0,083).
-- **Projeção:** a prevalência é maior nas radiografias AP (5,71%, 64 de 1.121) do que nas PA (3,73%, 77 de 2.064). Isso significa que a projeção carrega informação sobre o rótulo no próprio dataset.
-- **Idade:** a faixa de 60 anos ou mais tem a maior prevalência (5,80%, 38 de 655).
-- **Positivos por grupo no teste:** 9 mulheres e 10 homens. Qualquer comparação entre sexos tem evidência fraca.
+- **Exclusão de outras doenças:** 2.421 de 5.606 imagens foram excluídas, então o modelo não foi testado na separação de cardiomegalia de outros achados.
+- **Sexo:** o dataset registra apenas M e F. A amostra original tem 2.472 mulheres e 3.134 homens (44,1% de mulheres). No experimento, as mulheres representam 44,5% das imagens e têm 73 positivos em 1.416 imagens (5,16%), contra 68 em 1.769 para os homens (3,84%). Essa diferença de prevalência não é significativa a 5% (teste exato de Fisher, p = 0,083).
+- **Projeção:** a prevalência é maior nas radiografias AP (5,71%, 64 de 1.121) do que nas PA (3,73%, 77 de 2.064). Isso significa que a projeção carrega a informação do rótulo no próprio dataset.
+- **Idade:** a faixa de 60 anos ou mais apresenta a maior prevalência (5,80%, 38 de 655).
+- **Positivos por grupo no teste:** 9 mulheres e 10 homens. Qualquer comparação entre os sexos tem evidências fracas.
 
 <p align="center">
   <img src="assets/nb4_dataset_prevalencia.png" alt="Prevalência de cardiomegalia por sexo, faixa etária e projeção" width="95%">
@@ -306,7 +306,7 @@ Notebook: [`notebooks/04_fairness_governanca.ipynb`](notebooks/04_fairness_gover
 
 ### Fairness por sexo no teste
 
-Métricas por grupo, com o limiar de cada modelo: taxa de sinalização (paridade demográfica), recall (igualdade de oportunidade), taxa de falsos positivos, precisão (paridade preditiva) e AUC-ROC. A diferença F menos M vem com IC de 95% por bootstrap de pacientes. Quando o IC inclui zero, a diferença não está demonstrada. Com prevalências diferentes entre os grupos, não é possível igualar todas essas métricas ao mesmo tempo (Chouldechova, 2017; Kleinberg et al., 2016), por isso todas são mostradas.
+Métricas por grupo, com o limiar de cada modelo: taxa de sinalização (paridade demográfica), recall (igualdade de oportunidade), taxa de falsos positivos, precisão (paridade preditiva) e AUC-ROC. A diferença F menos M vem com IC de 95% por bootstrap de pacientes. Quando o IC inclui zero, a diferença não está demonstrada. Com prevalências diferentes entre os grupos, não é possível igualar todas essas métricas simultaneamente (Chouldechova, 2017; Kleinberg et al., 2016); por isso, todas são apresentadas.
 
 **ResNet50** (positivos acertados: F 8/9, M 9/10):
 
@@ -335,8 +335,8 @@ Métricas por grupo, com o limiar de cada modelo: taxa de sinalização (paridad
 **Leitura:**
 
 - **ResNet50:** nenhuma diferença demonstrada. Isso não prova igualdade: o recall é 0,889 para mulheres e 0,900 para homens, mas o IC da diferença é [-0,301 a 0,573], muito largo, porque cada grupo tem cerca de 10 positivos.
-- **CNN simples:** duas das cinco métricas excluem zero. A AUC-ROC é 0,482 para mulheres e 0,809 para homens (diferença -0,327, IC [-0,496 a -0,099]), e a taxa de falsos positivos é 15,1% para mulheres e 7,0% para homens (diferença 0,081, IC [0,023 a 0,142]). A AUC-ROC de 0,482 para mulheres é compatível com ordenação ao acaso, com apenas 9 positivos.
-- **Cuidado com múltiplas comparações:** foram 10 comparações (5 métricas em 2 modelos), sem correção para testes múltiplos, e 2 delas excluem zero. Esses dois resultados são hipóteses a investigar com mais dados, não conclusões.
+- **CNN simples:** duas das cinco métricas excluem zero. A AUC-ROC é 0,482 para mulheres e 0,809 para homens (diferença de -0,327, IC [-0,496 a -0,099]), e a taxa de falsos positivos é de 15,1% para mulheres e 7,0% para homens (diferença de 0,081, IC [0,023 a 0,142]). A AUC-ROC de 0,482 para mulheres é compatível com ordenação ao acaso, com apenas 9 positivos.
+- **Cuidado com múltiplas comparações:** foram 10 comparações (5 métricas em 2 modelos), sem correção para testes múltiplos, e 2 delas excluem zero. Esses dois resultados são hipóteses a serem investigadas com mais dados, não conclusões.
 
 ### Projeção da radiografia (AP e PA) e faixa etária
 
@@ -347,7 +347,7 @@ A ResNet50, entre as imagens **sem achados** do teste:
 | PA | 306 | 298 | 77 | 25,8% [21,2% a 31,1%] | 6/8 |
 | AP | 140 | 129 | 63 | 48,8% [40,4% a 57,4%] | 11/11 |
 
-A taxa de falsos positivos é mais que o dobro em AP (48,8% contra 25,8%, teste exato de Fisher, p < 0,001). Isso sustenta a hipótese de que o modelo reage a características associadas à projeção AP e não apenas à silhueta cardíaca. Há uma ressalva: AP também tem prevalência maior de cardiomegalia no dataset (5,71% contra 3,73%), então parte da sensibilidade ao AP pode refletir uma correlação real entre projeção e rótulo, e não foi isolado o que no exame AP o modelo usa. O recall por projeção só é descritivo: positivos acertados em AP 11/11 e em PA 6/8.
+A taxa de falsos positivos é mais do que o dobro em AP (48,8% contra 25,8%; teste exato de Fisher, p < 0,001). Isso sustenta a hipótese de que o modelo reage a características associadas à projeção AP e não apenas à silhueta cardíaca. Há uma ressalva: o AP também apresenta maior prevalência de cardiomegalia no dataset (5,71% contra 3,73%), então parte da sensibilidade ao AP pode refletir uma correlação real entre projeção e rótulo, e não foi isolado o que o modelo usa no exame AP. O recall por projeção é apenas descritivo: positivos acertados em AP: 11/11 e em PA: 6/8.
 
 Por faixa etária (mesmo modelo, imagens sem achados):
 
@@ -357,11 +357,11 @@ Por faixa etária (mesmo modelo, imagens sem achados):
 | 40-59 | 184 | 178 | 33,7% [27,2% a 40,9%] | 6/6 |
 | 60+ | 88 | 82 | 39,0% [29,2% a 49,8%] | 5/6 |
 
-A taxa de falsos positivos cresce com a idade, mas os intervalos se sobrepõem: a diferença entre faixas não está demonstrada.
+A taxa de falsos positivos cresce com a idade, mas os intervalos se sobrepõem: a diferença entre as faixas não se evidencia.
 
 ### Experimento de mitigação: limiares por sexo
 
-O experimento escolhe, **na validação**, um limiar por sexo que iguala a taxa de sinalização de cada grupo à taxa geral do limiar original (CNN: 10,4% das imagens da validação; ResNet50: 35,5%). Depois aplica esses limiares no teste, sem reajuste. Não se iguala o recall porque a validação tem 5 homens positivos (e 17 mulheres), pouco para estimar um limiar.
+O experimento escolhe, **na validação**, um limiar por sexo que iguala a taxa de sinalização de cada grupo à taxa geral do limiar original (CNN: 10,4% das imagens da validação; ResNet50: 35,5%). Depois aplica esses limiares no teste, sem reajuste. Não se pode igualar o recall porque a validação tem 5 homens positivos (e 17 mulheres), o que é insuficiente para estimar um limiar.
 
 | Modelo | Métrica | Diferença F - M com limiar único | Diferença F - M com limiar por sexo |
 |---|---|---|---|
@@ -372,10 +372,10 @@ O experimento escolhe, **na validação**, um limiar por sexo que iguala a taxa 
 | ResNet50 | recall | -0,011 [-0,301 a 0,573] | -0,011 [-0,301 a 0,573] |
 | ResNet50 | falsos positivos | -0,054 [-0,145 a 0,032] | -0,054 [-0,145 a 0,032] |
 
-- **CNN simples:** os limiares por sexo são 0,802 (F) e 0,769 (M), contra 0,79 do limiar único. A diferença de falsos positivos cai de 0,081 para 0,011, com IC que inclui zero. Positivos sinalizados no teste: 6 para 6 de 19. Imagens sinalizadas: 51 para 54 de 446. O recall e a AUC-ROC não mudam.
-- **ResNet50:** os limiares por sexo saem praticamente iguais (0,350 e 0,350, contra 0,35), porque na validação as pontuações têm distribuição parecida nos dois sexos. O experimento não altera nada: positivos 17 para 17, imagens sinalizadas 157 para 157.
+- **CNN simples:** os limiares por sexo são 0,802 (F) e 0,769 (M), contra 0,79 do limiar único. A diferença de falsos positivos cai de 0,081 para 0,011, com IC que inclui zero. Positivos sinalizados no teste: 6 de 19. Imagens sinalizadas: 51 para 54 de 446. O recall e a AUC-ROC não mudam.
+- **ResNet50:** os limiares por sexo saem praticamente iguais (0,350 e 0,350, contra 0,35), porque, na validação, as pontuações têm distribuição semelhante entre os dois sexos. O experimento não altera nada: positivos 17 para 17, imagens sinalizadas 157 para 157.
 
-Isto é um experimento, não uma recomendação. Usar o sexo como entrada da decisão faz o mesmo escore ter significados diferentes por grupo, pode ter restrições éticas e legais em contexto clínico e não garante igualdade de benefício entre pacientes. O notebook e o relatório discutem esses custos.
+Isto é um experimento, não uma recomendação. Usar o sexo como entrada da decisão faz com que o mesmo escore tenha significados diferentes por grupo, pode ter restrições éticas e legais em contexto clínico e não garante igualdade de benefício entre pacientes. O notebook e o relatório abordam esses custos.
 
 <p align="center">
   <img src="assets/nb4_mitigacao.png" alt="Taxa de sinalização, recall e falsos positivos por sexo, com limiar único e por sexo" width="90%">
@@ -383,7 +383,7 @@ Isto é um experimento, não uma recomendação. Usar o sexo como entrada da dec
 
 ### Ficha do modelo
 
-O Notebook 4 gera `ficha_do_modelo.json` e `.md` com o contrato de uso (entrada, saída, limiar, aviso), o desempenho no teste, as diferenças por sexo e as limitações, todos lidos das tabelas calculadas. A ficha foi pensada para as fases seguintes reaproveitarem em vez de copiar números à mão: por exemplo, citar as limitações em um assistente conversacional e usar o contrato de entrada e saída em uma integração. Isso é uma intenção de projeto: nenhuma fase seguinte consome a ficha ainda.
+O Notebook 4 gera `ficha_do_modelo.json` e `.md` com o contrato de uso (entrada, saída, limiar, aviso), o desempenho no teste, as diferenças por sexo e as limitações, todos extraídos das tabelas calculadas. A ficha foi pensada para que as fases seguintes reaproveitem, em vez de copiarem números à mão: por exemplo, citar as limitações em um assistente conversacional e usar o contrato de entrada e saída em uma integração. Isso é uma intenção de projeto: nenhuma fase seguinte consome a ficha ainda.
 
 ---
 
@@ -395,7 +395,7 @@ O Notebook 4 gera `ficha_do_modelo.json` e `.md` com o contrato de uso (entrada,
 
 ## Como executar no Google Colab
 
-Os notebooks devem ser executados em ordem e guardam os dados no Google Drive, em `MyDrive/Pulso_F4`. Cada notebook monta o Drive e confere se os arquivos do anterior existem.
+Os notebooks devem ser executados em ordem e guardam os dados no Google Drive, em `MyDrive/Pulso_F4`. Cada notebook monta o Drive e verifica se os arquivos do notebook anterior existem.
 
 | Notebook | Ambiente | O que precisa |
 |---|---|---|
@@ -420,13 +420,13 @@ Versões usadas na execução final do Notebook 2: Python 3.13.16, TensorFlow 2.
 O eixo de Responsible AI documentado nas fases anteriores continua nesta fase:
 
 - Os rótulos vêm de laudos processados automaticamente e não têm validação clínica independente.
-- O teste tem só 19 positivos (9 mulheres e 10 homens). Todas as métricas têm intervalos largos e devem ser lidas como estimativas.
+- O teste tem apenas 19 resultados positivos (9 mulheres e 10 homens). Todas as métricas têm intervalos amplos e devem ser interpretadas como estimativas.
 - O limiar vem de uma validação com 22 positivos, e a escolha é instável.
 - Os modelos têm precisão baixa. O protótipo ilustra o fluxo; não é um instrumento de triagem.
 - A pontuação não é calibrada e não representa probabilidade de doença.
 - O modelo foi treinado e testado em uma única fonte de dados (NIH), sem validação externa.
-- Há uma única divisão dos dados, sem validação cruzada, então a variação causada por outra divisão de pacientes não foi medida.
-- A ResNet50 mostra sensibilidade à projeção AP. Um modelo com esse comportamento pode reproduzir diferenças entre contextos de atendimento em vez de medir cardiomegalia.
+- Há apenas uma divisão dos dados, sem validação cruzada, portanto, a variabilidade decorrente de outras divisões de pacientes não foi avaliada.
+- A ResNet50 apresenta sensibilidade à projeção AP. Um modelo com esse comportamento pode reproduzir diferenças entre contextos de atendimento em vez de medir cardiomegalia.
 - O dataset registra apenas sexo binário. Outras identidades, raça, etnia e condição socioeconômica não puderam ser avaliadas.
 - Os resultados variam entre execuções e entre CPU e GPU.
 - A pasta `resultados/` guarda saídas pequenas. As imagens do NIH e os modelos treinados não estão no repositório.
@@ -455,14 +455,14 @@ Diferenciando o que está no repositório do que é gerado em execução (ponto 
 **Modelo e avaliação**
 - Tratar o viés de projeção: treinar com balanceamento por projeção AP/PA ou restringir a PA, e repetir a medida de falsos positivos por projeção.
 - Medir a variação entre execuções e entre divisões: validação cruzada por paciente e várias sementes.
-- Aumentar o número de positivos usando o dataset completo do NIH (Kaggle: `nih-chest-xrays/data`, link citado no enunciado), para dar poder estatístico às comparações por grupo.
-- Calibrar as pontuações e escolher o limiar por custo clínico, não só pelo F1.
+- Aumentar o número de casos positivos usando o dataset completo do NIH (Kaggle: `nih-chest-xrays/data`, link citado no enunciado), para dar poder estatístico às comparações entre grupos.
+- Calibrar as pontuações e escolher o limiar com base no custo clínico, não apenas no F1.
 - Validação externa, com dados de outra instituição.
 - Comparar com a VGG16, que não foi testada.
 
 **Governança**
 - Aplicar correção para múltiplas comparações quando houver mais dados.
-- Estender a análise de fairness a outras variáveis quando existirem no dado.
+- Estender a análise de fairness a outras variáveis quando existirem nos dados.
 
 **Herdadas de fases anteriores**
 - Conversão do sinal de ECG em imagem em escala de cinza e uso de CNN (Ir Além 2 da Fase 2).
