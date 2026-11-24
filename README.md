@@ -17,7 +17,6 @@
 
 ---
 
-# Repositório da Fase 4: github.com/flango2023/Pulso_F4
 
 ---
 
