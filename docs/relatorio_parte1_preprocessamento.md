@@ -2,6 +2,7 @@
 **Projeto:** Pulso — Inteligência Cardiológica com Consciência de Dados  
 **Fase 4:** Coração em Imagens — Assistente Cardiológico Virtual com Visão Computacional  
 **Dataset:** NIH Chest X-rays (versão amostra)  
+**Repositório:** [github.com/flango2023/Pulso_F4](https://github.com/flango2023/Pulso_F4)  
 **Autor:** Richard Schmitz — RM 567951 — Turma 2TIAOR-2026
 
 ---
