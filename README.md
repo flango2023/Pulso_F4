@@ -37,7 +37,7 @@ Esta é a Fase 4: um protótipo de assistente que classifica radiografias de tó
 | CNN do zero | AUC-ROC 0,668, recall 0,316, precisão 0,118 no teste |
 | ResNet50 | AUC-ROC 0,845, recall 0,895, precisão 0,108 no teste |
 | Limitação principal | Precisão em torno de 0,11 em ambos os modelos: a maior parte das imagens sinalizadas não apresenta cardiomegalia no laudo. A acurácia da ResNet50 (0,682) fica abaixo da referência que responde sempre "sem achados" (0,957) |
-| Fairness por sexo | ResNet50: nenhuma das 5 métricas mostra diferença entre mulheres e homens, com apenas 19 positivos no teste. CNN do zero: 2 de 5 métricas mostram diferença (falsos positivos e AUC-ROC) |
+| Fairness por sexo | ResNet50: nenhuma das 5 métricas mostra diferença demonstrada entre mulheres e homens, com apenas 19 positivos no teste. CNN do zero: 2 de 5 métricas mostram diferença (falsos positivos e AUC-ROC) |
 | Achado principal do Ir Além 1 | A ResNet50 sinaliza 48,8% das radiografias AP sem achados contra 25,8% das PA (p < 0,001) |
 
 Os números acima vêm de `resultados/` e das saídas dos notebooks executados. Esta fase é um protótipo acadêmico: nenhum resultado indica desempenho clínico.
@@ -58,7 +58,7 @@ O Pulso é construído em torno de uma questão de governança em saúde. Na Fas
 
 **um modelo de imagem só tem valor clínico se for possível dizer para quem e em que condições ele erra.**
 
-Por isso, a fase não se limita a reportar a acurácia. Cada métrica vem com um intervalo de confiança; o limiar de decisão aparece junto a cada resultado, e o desempenho é apresentado por sexo (eixo do projeto), por faixa etária e por projeção da radiografia (AP ou PA). A abertura por projeção surgiu de uma observação do protótipo: o Grad-CAM de um falso positivo destacou uma radiografia portátil em AP, o que levantou a hipótese de que o modelo reage ao tipo de exame. Ela foi testada na Parte C do Notebook 4 e os dados a sustentam (ver [Ir Além 1](#ir-além-1--ética-e-governança-em-visão-computacional)).
+Por isso, a fase não se limita a reportar a acurácia. Cada métrica vem com um intervalo de confiança; o limiar de decisão aparece junto a cada resultado, e o desempenho é apresentado por sexo (eixo do projeto), por faixa etária e por projeção da radiografia (AP ou PA). A abertura por projeção surgiu de uma observação do protótipo: o Grad-CAM de um falso positivo mostrou uma radiografia portátil em AP, o que levantou a hipótese de que o modelo reage ao tipo de exame. Ela foi testada na Parte C do Notebook 4 e os dados a sustentam (ver [Ir Além 1](#ir-além-1--ética-e-governança-em-visão-computacional)).
 
 ---
 
@@ -134,6 +134,7 @@ Pulso_F4/
 │
 ├── docs/
 │   ├── relatorio_parte1_preprocessamento.md   ← Relatório da Parte 1 (1 a 2 pg)
+│   ├── relatorio_parte1_preprocessamento.pdf  ← Mesmo relatório em PDF, para envio
 │   ├── relatorio_iralem1_fairness.md          ← Relatório do Ir Além 1 (até 2 pg)
 │   └── ficha_do_modelo.md                     ← Ficha do modelo (formato de leitura)
 │
@@ -165,7 +166,7 @@ As imagens **não** estão neste repositório (consulte [Rastreabilidade](#rastr
 |---|---|---|
 | Tarefa | Classificação binária: cardiomegalia (1) contra sem achados (0) | Mantém o foco cardiovascular do projeto e permite métricas simples de interpretar |
 | Imagens com outras doenças e sem cardiomegalia | Excluídas (2.421 de 5.606) | Evitam um rótulo 0 ambíguo. Consequência: o modelo não é testado contra outras doenças |
-| Divisão | **Por paciente**, estratificada em 70% / 15% / 15% | Cada paciente tem, em média, 1,15 imagens (máximo de 6). Dividir por imagem colocaria o mesmo paciente em treino e teste |
+| Divisão | **Por paciente**, estratificada em cerca de 70% / 15% / 15% | Cada paciente tem, em média, 1,15 imagens (máximo de 6). Dividir por imagem colocaria o mesmo paciente em treino e teste |
 | Cor | Escala de cinza, 1 canal | Radiografia é monocromática |
 | Tamanho | 224 x 224, interpolação LANCZOS | Entrada padrão de VGG16 e ResNet |
 | Normalização | 0 a 255 para 0 a 1, aplicada dentro do modelo | Os arquivos ficam em `uint8`, menores |
@@ -197,7 +198,7 @@ Conferência visual (4 imagens de cada classe, antes e depois do pré-processame
 
 **Correção feita durante a fase:** a primeira execução do Notebook 1 leu zero idades sem avisar, porque a coluna vinha como texto (por exemplo, `058Y`) e a conversão para numérico transformava tudo em valores ausentes. O parsing foi corrigido (função `limpar_metadados`, seção 4 do notebook), e uma verificação passou a interromper a execução caso nenhuma idade seja lida (na mesma seção).
 
-Relatório da parte: [`docs/relatorio_parte1_preprocessamento.md`](docs/relatorio_parte1_preprocessamento.md).
+Relatório da parte: [`docs/relatorio_parte1_preprocessamento.md`](docs/relatorio_parte1_preprocessamento.md) (versão em PDF: [`docs/relatorio_parte1_preprocessamento.pdf`](docs/relatorio_parte1_preprocessamento.pdf)).
 
 ---
 
@@ -296,7 +297,7 @@ Notebook: [`notebooks/04_fairness_governanca.ipynb`](notebooks/04_fairness_gover
 - **Desbalanceamento:** 4,43% de prevalência (141 de 3.185). Treino com 100 positivos, validação com 22 e teste com 19.
 - **Exclusão de outras doenças:** 2.421 de 5.606 imagens foram excluídas, então o modelo não foi testado na separação de cardiomegalia de outros achados.
 - **Sexo:** o dataset registra apenas M e F. A amostra original tem 2.472 mulheres e 3.134 homens (44,1% de mulheres). No experimento, as mulheres representam 44,5% das imagens e têm 73 positivos em 1.416 imagens (5,16%), contra 68 em 1.769 para os homens (3,84%). Essa diferença de prevalência não é significativa a 5% (teste exato de Fisher, p = 0,083).
-- **Projeção:** a prevalência é maior nas radiografias AP (5,71%, 64 de 1.121) do que nas PA (3,73%, 77 de 2.064). Isso significa que a projeção carrega a informação do rótulo no próprio dataset.
+- **Projeção:** a prevalência é maior nas radiografias AP (5,71%, 64 de 1.121) do que nas PA (3,73%, 77 de 2.064). Isso significa que a projeção carrega informação sobre o rótulo no próprio dataset.
 - **Idade:** a faixa de 60 anos ou mais apresenta a maior prevalência (5,80%, 38 de 655).
 - **Positivos por grupo no teste:** 9 mulheres e 10 homens. Qualquer comparação entre os sexos tem evidências fracas.
 
@@ -361,7 +362,7 @@ A taxa de falsos positivos cresce com a idade, mas os intervalos se sobrepõem: 
 
 ### Experimento de mitigação: limiares por sexo
 
-O experimento escolhe, **na validação**, um limiar por sexo que iguala a taxa de sinalização de cada grupo à taxa geral do limiar original (CNN: 10,4% das imagens da validação; ResNet50: 35,5%). Depois aplica esses limiares no teste, sem reajuste. Não se pode igualar o recall porque a validação tem 5 homens positivos (e 17 mulheres), o que é insuficiente para estimar um limiar.
+O experimento escolhe, **na validação**, um limiar por sexo que iguala a taxa de sinalização de cada grupo à taxa geral do limiar original (CNN: 10,4% das imagens da validação; ResNet50: 35,5%). Depois aplica esses limiares no teste, sem reajuste. Não se igualou o recall porque a validação tem 5 homens positivos (e 17 mulheres), o que é insuficiente para estimar um limiar.
 
 | Modelo | Métrica | Diferença F - M com limiar único | Diferença F - M com limiar por sexo |
 |---|---|---|---|
@@ -372,7 +373,7 @@ O experimento escolhe, **na validação**, um limiar por sexo que iguala a taxa 
 | ResNet50 | recall | -0,011 [-0,301 a 0,573] | -0,011 [-0,301 a 0,573] |
 | ResNet50 | falsos positivos | -0,054 [-0,145 a 0,032] | -0,054 [-0,145 a 0,032] |
 
-- **CNN simples:** os limiares por sexo são 0,802 (F) e 0,769 (M), contra 0,79 do limiar único. A diferença de falsos positivos cai de 0,081 para 0,011, com IC que inclui zero. Positivos sinalizados no teste: 6 de 19. Imagens sinalizadas: 51 para 54 de 446. O recall e a AUC-ROC não mudam.
+- **CNN simples:** os limiares por sexo são 0,802 (F) e 0,769 (M), contra 0,79 do limiar único. A diferença de falsos positivos cai de 0,081 para 0,011, com IC que inclui zero. Positivos sinalizados no teste: 6 de 19, antes e depois. Imagens sinalizadas: 51 para 54 de 446. O recall e a AUC-ROC não mudam.
 - **ResNet50:** os limiares por sexo saem praticamente iguais (0,350 e 0,350, contra 0,35), porque, na validação, as pontuações têm distribuição semelhante entre os dois sexos. O experimento não altera nada: positivos 17 para 17, imagens sinalizadas 157 para 157.
 
 Isto é um experimento, não uma recomendação. Usar o sexo como entrada da decisão faz com que o mesmo escore tenha significados diferentes por grupo, pode ter restrições éticas e legais em contexto clínico e não garante igualdade de benefício entre pacientes. O notebook e o relatório abordam esses custos.
@@ -420,12 +421,12 @@ Versões usadas na execução final do Notebook 2: Python 3.13.16, TensorFlow 2.
 O eixo de Responsible AI documentado nas fases anteriores continua nesta fase:
 
 - Os rótulos vêm de laudos processados automaticamente e não têm validação clínica independente.
-- O teste tem apenas 19 resultados positivos (9 mulheres e 10 homens). Todas as métricas têm intervalos amplos e devem ser interpretadas como estimativas.
+- O teste tem apenas 19 casos positivos (9 mulheres e 10 homens). Todas as métricas têm intervalos amplos e devem ser interpretadas como estimativas.
 - O limiar vem de uma validação com 22 positivos, e a escolha é instável.
 - Os modelos têm precisão baixa. O protótipo ilustra o fluxo; não é um instrumento de triagem.
 - A pontuação não é calibrada e não representa probabilidade de doença.
 - O modelo foi treinado e testado em uma única fonte de dados (NIH), sem validação externa.
-- Há apenas uma divisão dos dados, sem validação cruzada, portanto, a variabilidade decorrente de outras divisões de pacientes não foi avaliada.
+- Há apenas uma divisão dos dados, sem validação cruzada; portanto, a variabilidade decorrente de outras divisões de pacientes não foi avaliada.
 - A ResNet50 apresenta sensibilidade à projeção AP. Um modelo com esse comportamento pode reproduzir diferenças entre contextos de atendimento em vez de medir cardiomegalia.
 - O dataset registra apenas sexo binário. Outras identidades, raça, etnia e condição socioeconômica não puderam ser avaliadas.
 - Os resultados variam entre execuções e entre CPU e GPU.

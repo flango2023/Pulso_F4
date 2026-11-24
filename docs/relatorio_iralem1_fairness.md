@@ -1,8 +1,14 @@
-# Relatório técnico do Ir Além 1: Ética e Governança em Visão Computacional
+# Relatório Ir Além 1 — Ética e Governança em Visão Computacional
+**Projeto:** Pulso — Inteligência Cardiológica com Consciência de Dados  
+**Fase 4:** Coração em Imagens — Assistente Cardiológico Virtual com Visão Computacional  
+**Dataset:** NIH Chest X-rays (versão amostra)  
+**Autor:** Richard Schmitz — RM 567951 — Turma 2TIAOR-2026
 
-**Aluno:** Richard Schmitz | **RM:** 567951 | **Turma:** 2TIAOR-2026 | **Fase 4:** Pulso, Assistente Cardiológico Virtual com Visão Computacional
+---
 
 Notebook: [`notebooks/04_fairness_governanca.ipynb`](../notebooks/04_fairness_governanca.ipynb). Tabelas completas: [`resultados/`](../resultados/) e [README](../README.md). Ficha do modelo: [`ficha_do_modelo.md`](ficha_do_modelo.md).
+
+---
 
 ## 1. Escopo e método
 
@@ -11,7 +17,7 @@ Analisa as limitações do dataset NIH (amostra) e mede se a CNN do zero e a Res
 ## 2. Limitações do dataset
 
 - **Desbalanceamento:** 141 positivos em 3.185 imagens (4,43%). O teste tem 9 positivos de mulheres e 10 de homens.
-- **Exclusão:** 2.421 de 5.606 imagens (outras doenças) ficaram fora. O modelo não foi testado em separar cardiomegalia de outros achados.
+- **Exclusão:** 2.421 de 5.606 imagens (outras doenças) foram excluídas. O modelo não foi testado na separação de cardiomegalia de outros achados.
 - **Representatividade:** só existem as categorias M e F. A amostra original tem 44,1% de mulheres. A prevalência é 5,16% nas mulheres e 3,84% nos homens (Fisher, p = 0,083, não significativa a 5%), 5,71% em AP e 3,73% em PA, e 5,80% na faixa de 60 anos ou mais.
 - **Rótulos:** extraídos dos laudos por processamento de linguagem natural (Wang et al., 2017), sem validação clínica independente. Erros podem afetar os grupos de forma desigual.
 
