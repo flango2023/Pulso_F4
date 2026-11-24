@@ -1,0 +1,139 @@
+{
+  "nome": "Pulso Fase 4 - classificador de cardiomegalia em radiografia de torax (prototipo academico)",
+  "modelo": {
+    "arquitetura": "ResNet50 com Transfer Learning (ImageNet)",
+    "arquivo": "modelo_resnet50.keras (Drive, nao versionado no repositorio)",
+    "parametros": 23589761,
+    "limiar": 0.35,
+    "semente": 42
+  },
+  "contrato_de_uso": {
+    "entrada": "radiografia de torax frontal, escala de cinza, 224 x 224, uint8 (0 a 255), 1 canal, pre-processada como no Notebook 1 (LANCZOS)",
+    "saida": "pontuacao de 0 a 1, nao calibrada, que nao representa probabilidade de doenca",
+    "decisao": "imagem sinalizada para revisao se pontuacao >= 0.35",
+    "aviso_obrigatorio": "Projeto academico. Nao e diagnostico e nao deve apoiar decisao clinica."
+  },
+  "dados": {
+    "dataset": "NIH Chest X-rays, amostra (Kaggle: nih-chest-xrays/sample)",
+    "imagens_no_experimento": 3185,
+    "positivos_no_experimento": 141,
+    "excluidas_outras_doencas": 2421,
+    "rotulos": "extraidos de laudos, sem validacao clinica independente"
+  },
+  "desempenho_teste": {
+    "imagens": 446,
+    "positivos": 19,
+    "recall": 0.8947368421052632,
+    "precisao": 0.10828025477707007,
+    "f1": 0.19318181818181818,
+    "auc_roc": 0.8450634783680513,
+    "auc_pr": 0.15708454355517262,
+    "acuracia": 0.6816143497757847,
+    "ic95": {
+      "precisao": [
+        0.04486731843575419,
+        0.1830065359477124
+      ],
+      "recall": [
+        0.6869791666666667,
+        1.0
+      ],
+      "f1": [
+        0.08532960941497528,
+        0.30616169544740973
+      ],
+      "auc_roc": [
+        0.748398724818241,
+        0.9075242831600192
+      ],
+      "auc_pr": [
+        0.05923629857359544,
+        0.3449928370305719
+      ]
+    }
+  },
+  "fairness_sexo_teste": {
+    "positivos": {
+      "F": 9,
+      "M": 10
+    },
+    "taxa_de_sinalizacao": {
+      "F": 0.3247,
+      "M": 0.373,
+      "dif_F_menos_M": -0.0483,
+      "ic95": [
+        -0.1422,
+        0.0455
+      ],
+      "leitura": "IC inclui 0: diferenca nao demonstrada"
+    },
+    "recall": {
+      "F": 0.8889,
+      "M": 0.9,
+      "dif_F_menos_M": -0.0111,
+      "ic95": [
+        -0.3012,
+        0.5732
+      ],
+      "leitura": "IC inclui 0: diferenca nao demonstrada"
+    },
+    "falsos_positivos": {
+      "F": 0.2973,
+      "M": 0.3512,
+      "dif_F_menos_M": -0.0539,
+      "ic95": [
+        -0.1451,
+        0.0321
+      ],
+      "leitura": "IC inclui 0: diferenca nao demonstrada"
+    },
+    "precisao": {
+      "F": 0.127,
+      "M": 0.0957,
+      "dif_F_menos_M": 0.0312,
+      "ic95": [
+        -0.0942,
+        0.1535
+      ],
+      "leitura": "IC inclui 0: diferenca nao demonstrada"
+    },
+    "auc_roc": {
+      "F": 0.8426,
+      "M": 0.8554,
+      "dif_F_menos_M": -0.0127,
+      "ic95": [
+        -0.135,
+        0.2428
+      ],
+      "leitura": "IC inclui 0: diferenca nao demonstrada"
+    }
+  },
+  "projecao_ap_pa": {
+    "fpr_ap": 0.4884,
+    "fpr_pa": 0.2584
+  },
+  "limitacoes": [
+    "Teste com apenas 19 casos positivos (9 F e 10 M): todas as metricas tem intervalos largos e devem ser lidas como hipoteses.",
+    "Precisao de 11% no teste: a maior parte das imagens sinalizadas nao tem cardiomegalia no laudo.",
+    "Acuracia de 68% no teste, abaixo da referencia que responde sempre 'sem achados' (96%). A acuracia nao serve como metrica aqui.",
+    "Imagens com outras doencas foram excluidas: o modelo nao foi testado em distinguir cardiomegalia de outros achados.",
+    "O dataset registra apenas sexo binario (M ou F). Outras identidades nao puderam ser avaliadas.",
+    "Resultados variam entre execucoes e entre CPU e GPU: no Notebook 3, 2 de 446 decisoes mudaram entre as duas.",
+    "Limiar escolhido na validacao, que tem poucos positivos.",
+    "Treinado e testado em uma unica fonte de dados (NIH). Sem validacao externa."
+  ],
+  "uso_pretendido": "demonstracao academica e estudo de visao computacional em saude",
+  "fora_do_escopo": [
+    "diagnostico",
+    "triagem de pacientes reais",
+    "apoio a decisao clinica",
+    "equipamentos ou populacoes diferentes do dataset NIH"
+  ],
+  "versoes": {
+    "python": "3.13.18",
+    "numpy": "2.4.6",
+    "pandas": "2.2.3",
+    "scipy": "1.16.3",
+    "scikit_learn": "1.6.1"
+  }
+}

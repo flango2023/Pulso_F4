@@ -1,0 +1,137 @@
+{
+  "semente": 42,
+  "teste": {
+    "imagens": 446,
+    "positivos": 19,
+    "pacientes": 395
+  },
+  "peso_de_classe": {
+    "0": 0.523,
+    "1": 11.385
+  },
+  "hiperparametros": {
+    "batch": 32,
+    "cnn_epocas_max": 40,
+    "cnn_paciencia": 8,
+    "cnn_lr": 0.001,
+    "resnet_fase1_epocas_max": 15,
+    "resnet_fase1_lr": 0.001,
+    "resnet_fase2_epocas_max": 15,
+    "resnet_fase2_lr": 1e-05,
+    "resnet_paciencia": 5
+  },
+  "epocas_executadas": {
+    "cnn_simples": 23,
+    "resnet50_fase1": 8,
+    "resnet50_fase2": 10
+  },
+  "parametros": {
+    "cnn_simples": 245969,
+    "resnet50": 23589761
+  },
+  "referencia_sempre_negativo": {
+    "acuracia": 0.9573991031390134,
+    "precisao": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "especificidade": 1.0,
+    "auc_roc": 0.5,
+    "auc_pr": 0.042600896860986545,
+    "tn": 427,
+    "fp": 0,
+    "fn": 19,
+    "tp": 0
+  },
+  "modelos": {
+    "cnn_simples": {
+      "rotulo": "CNN simples (do zero)",
+      "limiar": 0.79,
+      "f1_validacao_no_limiar": 0.2857142857142857,
+      "teste": {
+        "acuracia": 0.8699551569506726,
+        "precisao": 0.11764705882352941,
+        "recall": 0.3157894736842105,
+        "f1": 0.17142857142857143,
+        "especificidade": 0.8946135831381733,
+        "auc_roc": 0.6679403426599285,
+        "auc_pr": 0.08507127222881311,
+        "tn": 382,
+        "fp": 45,
+        "fn": 13,
+        "tp": 6
+      },
+      "ic95": {
+        "precisao": [
+          0.0,
+          0.25
+        ],
+        "recall": [
+          0.0,
+          0.521790890269151
+        ],
+        "f1": [
+          0.0,
+          0.31819828722002635
+        ],
+        "auc_roc": [
+          0.5098472488859822,
+          0.7720001112253032
+        ],
+        "auc_pr": [
+          0.027011367909174473,
+          0.20375980667630725
+        ],
+        "repeticoes_validas": 1000
+      }
+    },
+    "resnet50": {
+      "rotulo": "ResNet50 (Transfer Learning)",
+      "limiar": 0.35,
+      "f1_validacao_no_limiar": 0.17204301075268819,
+      "teste": {
+        "acuracia": 0.6816143497757847,
+        "precisao": 0.10828025477707007,
+        "recall": 0.8947368421052632,
+        "f1": 0.19318181818181818,
+        "especificidade": 0.6721311475409836,
+        "auc_roc": 0.8450634783680513,
+        "auc_pr": 0.15708454355517262,
+        "tn": 287,
+        "fp": 140,
+        "fn": 2,
+        "tp": 17
+      },
+      "ic95": {
+        "precisao": [
+          0.04486731843575419,
+          0.1830065359477124
+        ],
+        "recall": [
+          0.6869791666666667,
+          1.0
+        ],
+        "f1": [
+          0.08532960941497528,
+          0.30616169544740973
+        ],
+        "auc_roc": [
+          0.748398724818241,
+          0.9075242831600192
+        ],
+        "auc_pr": [
+          0.05923629857359544,
+          0.3449928370305719
+        ],
+        "repeticoes_validas": 1000
+      }
+    }
+  },
+  "versoes": {
+    "python": "3.13.16",
+    "numpy": "2.4.6",
+    "pandas": "2.2.3",
+    "scikit_learn": "1.6.1",
+    "tensorflow": "2.21.0",
+    "keras": "3.13.2"
+  }
+}

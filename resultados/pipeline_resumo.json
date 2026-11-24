@@ -1,0 +1,58 @@
+{
+  "dataset": "nih-chest-xrays/sample (Kaggle)",
+  "tarefa": "cardiomegalia (1) contra sem achados (0)",
+  "semente": 42,
+  "tamanho_imagem": [
+    224,
+    224
+  ],
+  "canais": 1,
+  "registros_no_csv": 5606,
+  "excluidos_outras_doencas": 2421,
+  "registros_no_experimento": 3185,
+  "idades_invalidas_marcadas_no_experimento": 1,
+  "tem_sexo": true,
+  "tem_idade": true,
+  "tamanhos_originais_amostra": {
+    "(1024, 1024)": 300
+  },
+  "particoes": {
+    "treino": {
+      "imagens": 2277,
+      "pacientes": 1975,
+      "positivos": 100,
+      "prevalencia_pct": 4.39,
+      "sexo": {
+        "M": 1287,
+        "F": 990
+      }
+    },
+    "validacao": {
+      "imagens": 462,
+      "pacientes": 392,
+      "positivos": 22,
+      "prevalencia_pct": 4.76,
+      "sexo": {
+        "F": 232,
+        "M": 230
+      }
+    },
+    "teste": {
+      "imagens": 446,
+      "pacientes": 395,
+      "positivos": 19,
+      "prevalencia_pct": 4.26,
+      "sexo": {
+        "M": 252,
+        "F": 194
+      }
+    }
+  },
+  "versoes": {
+    "python": "3.13.18",
+    "numpy": "2.4.6",
+    "pandas": "2.2.3",
+    "scikit_learn": "1.6.1",
+    "pillow": "11.3.0"
+  }
+}

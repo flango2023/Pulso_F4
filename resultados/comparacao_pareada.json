@@ -1,0 +1,50 @@
+{
+  "semente": 42,
+  "repeticoes": 2000,
+  "validacao": {
+    "cnn_simples": {
+      "auc_roc": 0.7414256198347109,
+      "auc_pr": 0.18484145053001905,
+      "imagens": 462,
+      "positivos": 22
+    },
+    "resnet50": {
+      "auc_roc": 0.6919421487603306,
+      "auc_pr": 0.08679673634694943,
+      "imagens": 462,
+      "positivos": 22
+    }
+  },
+  "teste": {
+    "cnn_simples": {
+      "auc_roc": 0.6679403426599285,
+      "auc_pr": 0.08507127222881311,
+      "imagens": 446,
+      "positivos": 19
+    },
+    "resnet50": {
+      "auc_roc": 0.8450634783680513,
+      "auc_pr": 0.15708454355517262,
+      "imagens": 446,
+      "positivos": 19
+    },
+    "dif_auc_roc_resnet50_menos_cnn": {
+      "media": 0.18333222246942818,
+      "ic95": [
+        0.08571346912128038,
+        0.30052381993006994
+      ],
+      "repeticoes_validas": 2000,
+      "leitura": "IC exclui 0: diferenca observada nesta amostra"
+    },
+    "dif_auc_pr_resnet50_menos_cnn": {
+      "media": 0.07234609390765652,
+      "ic95": [
+        -0.04039642082219214,
+        0.2023777539395908
+      ],
+      "repeticoes_validas": 2000,
+      "leitura": "IC inclui 0: diferenca nao demonstrada"
+    }
+  }
+}
